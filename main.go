@@ -31,7 +31,7 @@ func main() {
 
 	// Start the server:
 
-	logrus.Info("The HTTP web server starts now on https://127.0.0.1" + server.Addr)
+	logrus.Info("The HTTPS web server starts now on https://127.0.0.1" + server.Addr)
 	if errHTTP := server.ListenAndServeTLS("cert.pem", "key.pem"); errHTTP != nil {
 		logrus.Info("Was not able to start the HTTP server: ", errHTTP)
 		os.Exit(2)
@@ -81,7 +81,7 @@ func handlerUpload(response http.ResponseWriter, request *http.Request) {
 		} else {
 
 			// Write the data into a new file on server's side:
-			err = ioutil.WriteFile(sourceFilename, data, 0600)
+			err = ioutil.WriteFile("/data/"+sourceFilename, data, 0600)
 			if err != nil {
 				logrus.Error("ERROR:", err)
 			}
