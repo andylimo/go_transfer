@@ -7,10 +7,15 @@ import (
 	"os"
 	"time"
 
+	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	err := FindCreateCerts()
+	if err != nil {
+		logrus.Panic(err)
+	}
 
 	// Set up the HTTP server:
 	serverMUX := http.NewServeMux()
@@ -26,11 +31,24 @@ func main() {
 
 	// Start the server:
 
-	logrus.Info("The HTTP web server starts now on http://127.0.0.1" + server.Addr)
-	if errHTTP := server.ListenAndServe(); errHTTP != nil {
+	logrus.Info("The HTTP web server starts now on https://127.0.0.1" + server.Addr)
+	if errHTTP := server.ListenAndServeTLS("cert.pem", "key.pem"); errHTTP != nil {
 		logrus.Info("Was not able to start the HTTP server: ", errHTTP)
 		os.Exit(2)
 	}
+}
+
+func FindCreateCerts() error {
+	err := httpscerts.Check("cert.pem", "key.pem")
+	if err != nil {
+		err = httpscerts.Generate("cert.pem", "key.pem", "127.0.0.1:9999")
+		if err != nil {
+			logrus.Fatal("Couldn't create https certs.", err)
+			return err
+		}
+	}
+
+	return nil
 }
 
 func echoRequest(response http.ResponseWriter, request *http.Request) {
