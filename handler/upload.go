@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"io/ioutil"
@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func handlerUpload(response http.ResponseWriter, request *http.Request) {
+func HandlerUpload(response http.ResponseWriter, request *http.Request) {
 	var err error
 	file, fileHeader, err := request.FormFile(`file`)
 	if err != nil {

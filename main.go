@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"fieltransfer/handler"
+
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
 )
@@ -18,16 +20,16 @@ func main() {
 
 	// Set up the HTTP server:
 	serverMUX := http.NewServeMux()
-	serverMUX.HandleFunc("/upload", handlerUpload)
-	serverMUX.HandleFunc("/download", handlerDownload)
+	serverMUX.HandleFunc("/upload", handler.HandlerUpload)
+	serverMUX.HandleFunc("/download", handler.HandlerDownload)
 	serverMUX.HandleFunc("/echo", echoRequest)
 
 	server := &http.Server{}
 	server.Addr = ":9999"
 	server.Handler = serverMUX
 	server.SetKeepAlivesEnabled(true)
-	server.ReadTimeout = 60 * 120 * time.Second // 2 hours
-	server.WriteTimeout = 16 * time.Second
+	server.ReadTimeout = 60 * time.Second // 2 hours
+	server.WriteTimeout = 15 * time.Minute
 
 	// Start the server:
 

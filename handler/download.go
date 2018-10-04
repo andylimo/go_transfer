@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func handlerDownload(response http.ResponseWriter, request *http.Request) {
+func HandlerDownload(response http.ResponseWriter, request *http.Request) {
 	//First of check if Get is set in the URL
 	Filename := "data/" + request.URL.Query().Get("file")
 	if Filename == "" {
