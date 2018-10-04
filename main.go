@@ -15,7 +15,7 @@ func main() {
 	// Set up the HTTP server:
 	serverMUX := http.NewServeMux()
 	serverMUX.HandleFunc("/upload", handlerUpload)
-	serverMUX.HandleFunc("/dump", dumpRequest)
+	serverMUX.HandleFunc("/echo", echoRequest)
 
 	server := &http.Server{}
 	server.Addr = ":9999"
@@ -33,7 +33,7 @@ func main() {
 	}
 }
 
-func dumpRequest(response http.ResponseWriter, request *http.Request) {
+func echoRequest(response http.ResponseWriter, request *http.Request) {
 	requestDump, err := httputil.DumpRequest(request, true)
 	if err != nil {
 		logrus.Error("ERROR DUMPING:", err)
