@@ -6,22 +6,22 @@ import (
 	"os"
 	"time"
 
-	"fieltransfer/handler"
+	"./handler"
 
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	err := FindCreateCerts()
+	err := findCreateCerts()
 	if err != nil {
 		logrus.Panic(err)
 	}
 
 	// Set up the HTTP server:
 	serverMUX := http.NewServeMux()
-	serverMUX.HandleFunc("/upload", handler.HandlerUpload)
-	serverMUX.HandleFunc("/download", handler.HandlerDownload)
+	serverMUX.HandleFunc("/upload", handler.Upload)
+	serverMUX.HandleFunc("/download", handler.Download)
 	serverMUX.HandleFunc("/echo", echoRequest)
 
 	server := &http.Server{}
@@ -40,8 +40,9 @@ func main() {
 	}
 }
 
-func FindCreateCerts() error {
+func findCreateCerts() error {
 	err := httpscerts.Check("cert.pem", "key.pem")
+
 	if err != nil {
 		err = httpscerts.Generate("cert.pem", "key.pem", "127.0.0.1:9999")
 		if err != nil {
