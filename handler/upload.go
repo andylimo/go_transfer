@@ -3,11 +3,13 @@ package handler
 import (
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/sirupsen/logrus"
 )
 
-func HandlerUpload(response http.ResponseWriter, request *http.Request) {
+func Upload(response http.ResponseWriter, request *http.Request) {
 	var err error
 	file, fileHeader, err := request.FormFile(`file`)
 	if err != nil {
@@ -29,9 +31,22 @@ func HandlerUpload(response http.ResponseWriter, request *http.Request) {
 			http.Error(response, err.Error(), http.StatusInternalServerError)
 			return
 		} else {
+			currDir, err := os.Getwd()
+			if err != nil {
+				logrus.Fatal(err)
+			}
+
+			// Check if the directory exists!  If not, then we need to create it now
+			directory := filepath.Join(currDir, "data")
+			_, err = os.Stat(directory)
+
+			if os.IsNotExist(err) {
+				logrus.Info("Server: Unable to find directory, '", directory, "'.  Creating now...")
+				os.MkdirAll(directory, 0755)
+			}
 
 			// Write the data into a new file on server's side:
-			err = ioutil.WriteFile("data/"+sourceFilename, data, 0600)
+			err = ioutil.WriteFile(filepath.Join(directory, sourceFilename), data, 0600)
 			if err != nil {
 				logrus.Error("ERROR:", err)
 				http.Error(response, err.Error(), http.StatusInternalServerError)
@@ -41,12 +56,5 @@ func HandlerUpload(response http.ResponseWriter, request *http.Request) {
 			response.Write([]byte("OK"))
 			return
 		}
-	}
-	if err != nil {
-		http.Error(response, err.Error(), http.StatusBadRequest)
-		return
-	} else {
-		response.Write([]byte("OK"))
-		return
 	}
 }

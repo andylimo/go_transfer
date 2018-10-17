@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func HandlerDownload(response http.ResponseWriter, request *http.Request) {
+func Download(response http.ResponseWriter, request *http.Request) {
 	//First of check if Get is set in the URL
 	Filename := "data/" + request.URL.Query().Get("file")
 	if Filename == "" {
