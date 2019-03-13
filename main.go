@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"./handler"
+	"fieltransfer/handler"
 
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
