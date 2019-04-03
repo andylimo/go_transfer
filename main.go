@@ -6,14 +6,14 @@ import (
 	"os"
 	"time"
 
-	"fieltransfer/handler"
+	"filetransfer/handler"
 
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	err := findCreateCerts()
+	err := findCreateCerts() //
 	if err != nil {
 		logrus.Panic(err)
 	}
