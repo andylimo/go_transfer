@@ -52,12 +52,12 @@ before_script:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  # Build Chainquery successfully
-  - ./scripts/build.sh
+  # Build File Transfer successfully
+  - make
   # Fail if a .go file hasn't been formatted with gofmt
   - test -z $(gofmt -s -l $GO_FILES)
   # Run unit tests
-  - ./scripts/test.sh
+  - go test ./...
   # Checks for unused vars and fields on structs
   - varcheck ./...
   - structcheck ./...
@@ -74,10 +74,6 @@ script:
   - unconvert -v $(go list ./... | grep -v /vendor/ | grep -v /model | grep -v /swagger/ | grep -v /migration )
   # one last linter - ignore autogen code
   - golint -set_exit_status $(go list ./... | grep -v /vendor/ | grep -v /model/ | grep -v /swagger/ | grep -v /migration )
-  # end to end testing
-  - ./e2e/e2e.sh
-  # check model generation...
-  - ./bin/chainquery serve db && ./scripts/gen_models.sh
   # matches what was commited
   - git diff --exit-code
 
