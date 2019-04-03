@@ -53,6 +53,7 @@ before_script:
 # in a modern Go project.
 script:
   # Build File Transfer successfully
+  - go get ./...
   - make
   # Fail if a .go file hasn't been formatted with gofmt
   - test -z $(gofmt -s -l $GO_FILES)
