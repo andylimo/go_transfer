@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -38,14 +39,20 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 
 			// Check if the directory exists!  If not, then we need to create it now
 			directory := filepath.Join(currDir, "data")
-			_, err = os.Stat(directory)
-
+			_, err = os.Stat(directory + "/" + strings.Split(sourceFilename, "/")[0])
+			if err != nil {
+				logrus.Info(err)
+			}
 			if os.IsNotExist(err) {
 				logrus.Info("Server: Unable to find directory, '", directory, "'.  Creating now...")
-				os.MkdirAll(directory, 0755)
+				err := os.MkdirAll(directory+"/"+strings.Split(sourceFilename, "/")[0], 0755)
+				if err != nil {
+					logrus.Error(err)
+				}
 			}
 
 			// Write the data into a new file on server's side:
+			logrus.Info(directory)
 			err = ioutil.WriteFile(filepath.Join(directory, sourceFilename), data, 0600)
 			if err != nil {
 				logrus.Error("ERROR:", err)
