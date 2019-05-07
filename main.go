@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"filetransfer/handler"
+	"github.com/tiger5226/filetransfer/handler"
 
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
