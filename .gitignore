@@ -3,3 +3,4 @@ key.pem
 *.pfx
 /data/*
 simpleFT
+/vendor/*
