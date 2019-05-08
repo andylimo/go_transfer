@@ -33,7 +33,7 @@ func main() {
 
 	// Start the server:
 
-	logrus.Info("The HTTPS File Transfer web server starts now on https://127.0.0.1" + server.Addr)
+	logrus.Info("The HTTPS file transfer web server starts now on https://127.0.0.1" + server.Addr)
 	if errHTTP := server.ListenAndServeTLS("cert.pem", "key.pem"); errHTTP != nil {
 		logrus.Info("Was not able to start the HTTP server: ", errHTTP)
 		os.Exit(2)
