@@ -28,7 +28,7 @@ func main() {
 	server.Addr = ":9999"
 	server.Handler = serverMUX
 	server.SetKeepAlivesEnabled(true)
-	server.ReadTimeout = 60 * time.Second // 2 hours
+	server.ReadTimeout = 15 * time.Minute // 2 hours
 	server.WriteTimeout = 15 * time.Minute
 
 	// Start the server:
