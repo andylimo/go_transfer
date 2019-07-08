@@ -11,8 +11,21 @@ import (
 )
 
 func Upload(response http.ResponseWriter, request *http.Request) {
+	hs := map[string]string{
+		"Access-Control-Allow-Methods": "POST",
+		"Access-Control-Allow-Origin":  "*"}
+
+	for k, v := range hs {
+		response.Header().Set(k, v)
+	}
+
+	if request.Method == "OPTIONS" {
+		return
+	}
+
 	var err error
-	file, fileHeader, err := request.FormFile(`file`)
+	bucket := request.FormValue("bucket")
+	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
 		logrus.Error("Was not able to access the uploaded file: ", err)
 		http.Error(response, err.Error(), http.StatusBadRequest)
@@ -23,7 +36,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 		defer file.Close()
 
 		// Get the original filename:
-		sourceFilename := fileHeader.Filename
+		sourceFilename := bucket + "/" + fileHeader.Filename
 
 		// Read the entire file into memory:
 		data, err := ioutil.ReadAll(file)
