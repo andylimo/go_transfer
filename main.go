@@ -21,7 +21,7 @@ func main() {
 		logrus.Panic(err)
 	}
 
-	// Set up routes
+	// Set up routes -
 	serverMUX := http.NewServeMux()
 	routes := actions.GetRoutes()
 	//Specialty Handlers for Data Upload/Download
