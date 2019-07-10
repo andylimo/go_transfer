@@ -73,7 +73,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 				return
 			}
 			logrus.Info("Server: File was read from client and written to disk.")
-			response.Write([]byte("OK"))
+			response.WriteHeader(http.StatusOK)
 			return
 		}
 	}

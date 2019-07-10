@@ -24,6 +24,8 @@ func GetRoutes() *Routes {
 	routes.Set("/", Root)
 	routes.Set("/test", Test)
 
+	routes.Set("/bucket/list", List)
+
 	return &routes
 }
 

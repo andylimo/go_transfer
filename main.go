@@ -21,6 +21,13 @@ func main() {
 		logrus.Panic(err)
 	}
 
+	currDir, err := os.Getwd()
+	if err != nil {
+		logrus.Panic(err)
+	}
+
+	logrus.Infof("Current Working Directory: %s", currDir)
+
 	// Set up routes -
 	serverMUX := http.NewServeMux()
 	routes := actions.GetRoutes()
