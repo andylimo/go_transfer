@@ -23,7 +23,7 @@ func List(r *http.Request) api.Response {
 			return nil
 		}
 		if info.IsDir() && (bucket == nil || bucket.Name != info.Name()) {
-			bucket = &ftBucket{Name: info.Name(), Files: make([]*ftBucketFile, 1)}
+			bucket = &ftBucket{Name: info.Name(), Files: make([]*ftBucketFile, 0)}
 			buckets = append(buckets, bucket)
 		} else {
 			file := &ftBucketFile{info.Name(), info.Size(), info.ModTime()}
