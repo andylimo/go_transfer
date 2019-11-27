@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"filetransfer/actions/jenkinsfile"
 	"filetransfer/orderedmap"
 	"net/http"
 
@@ -25,6 +26,8 @@ func GetRoutes() *Routes {
 	routes.Set("/test", Test)
 
 	routes.Set("/bucket/list", List)
+	routes.Set("/jenkinsfile/list", jenkinsfile.List)
+	routes.Set("/jenkinsfile/publish", jenkinsfile.Publish)
 
 	return &routes
 }

@@ -2,5 +2,6 @@ cert.pem
 key.pem
 *.pfx
 /data/*
+/jenkinsfiles/*
 simpleFT
 /vendor/*

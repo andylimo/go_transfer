@@ -51,7 +51,8 @@ func main() {
 	// Start the server:
 	logrus.Printf("Listening on port %v", 9999)
 	go func() {
-		err := server.ListenAndServeTLS("cert.pem", "key.pem")
+		err := server.ListenAndServe()
+		//err := server.ListenAndServeTLS("cert.pem", "key.pem")
 		if err != nil {
 			//Normal graceful shutdown error
 			if err.Error() == "http: Server closed" {

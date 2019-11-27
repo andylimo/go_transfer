@@ -10,6 +10,7 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/lbryio/lbry.go v1.0.15
+	github.com/lbryio/ozzo-validation v0.0.0-20170323141101-d1008ad1fd04
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/ogier/pflag v0.0.1 // indirect
 	github.com/sirupsen/logrus v1.4.1
