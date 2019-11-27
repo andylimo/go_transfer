@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -98,12 +97,12 @@ func Publish(r *http.Request) api.Response {
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {
-		log.Fatal(err)
+		return api.Response{Error: errors.Err(err)}
 	} else {
 		body := &bytes.Buffer{}
 		_, err := body.ReadFrom(resp.Body)
 		if err != nil {
-			log.Fatal(err)
+			return api.Response{Error: errors.Err(err)}
 		}
 		resp.Body.Close()
 		fmt.Println(resp.StatusCode)
