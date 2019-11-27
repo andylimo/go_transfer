@@ -11,11 +11,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/lbryio/ozzo-validation/is"
-
 	"github.com/lbryio/lbry.go/extras/api"
 	"github.com/lbryio/lbry.go/extras/errors"
 	v "github.com/lbryio/ozzo-validation"
+	"github.com/lbryio/ozzo-validation/is"
+	"github.com/sirupsen/logrus"
 )
 
 type jenkinsFile struct {
@@ -74,6 +74,7 @@ func Publish(r *http.Request) api.Response {
 	repo := params.Repository
 	path := "Jenkinsfile"
 	bitbucketURL := os.Getenv("BITBUCKET_URL")
+	logrus.Info("BitbucketURL: ", bitbucketURL)
 	url := fmt.Sprintf("%s/rest/api/1.0/projects/%s/repos/%s/browse/%s", bitbucketURL, projectKey, repo, path)
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
