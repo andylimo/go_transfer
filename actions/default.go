@@ -12,7 +12,7 @@ import (
 	"github.com/lbryio/lbry.go/extras/errors"
 )
 
-// RootHandler is the default handler
+// Root Handler is the default handler
 func Root(r *http.Request) api.Response {
 	if r.URL.Path == "/" {
 		return api.Response{Data: "Welcome to Simple File Transfer"}
@@ -20,10 +20,12 @@ func Root(r *http.Request) api.Response {
 	return api.Response{Status: http.StatusNotFound, Error: errors.Err("404 Not Found")}
 }
 
+// Test simple test method for the handler
 func Test(r *http.Request) api.Response {
 	return api.Response{Data: "ok"}
 }
 
+// ConfigureAPIServer Handles the default configuration of the API Server
 func ConfigureAPIServer() {
 	api.TraceEnabled = util.Debugging
 

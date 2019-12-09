@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Download Handles a server request to download content from one of the project buckets
 func Download(response http.ResponseWriter, request *http.Request) {
 	//First of check if Get is set in the URL
 	Filename := "data/" + request.URL.Query().Get("file")
@@ -54,6 +55,4 @@ func Download(response http.ResponseWriter, request *http.Request) {
 	//We read 512 bytes from the file already so we reset the offset back to 0
 	Openfile.Seek(0, 0)
 	io.Copy(response, Openfile) //'Copy' the file to the client
-	return
-
 }
