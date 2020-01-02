@@ -64,9 +64,10 @@ func List(r *http.Request) api.Response {
 		if root == path {
 			return nil
 		}
-		contents, walkErr := ioutil.ReadFile(path)
-		if walkErr != nil {
-			return errors.Err(walkErr)
+		var contents []byte
+		contents, err = ioutil.ReadFile(path)
+		if err != nil {
+			return errors.Err(err)
 		}
 		file := jenkinsFile{info.Name(), string(contents), info.ModTime()}
 		files = append(files, file)

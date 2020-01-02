@@ -1,4 +1,4 @@
-module filetransfer
+module github.com/tiger5226/filetransfer
 
 go 1.12
 

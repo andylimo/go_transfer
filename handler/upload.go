@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/tiger5226/filetransfer/util"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -34,7 +36,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	}
 
 	// Close the file afterwards:
-	defer file.Close()
+	defer util.CloseMPFile(file)
 
 	// Get the original filename:
 	sourceFilename := bucket + "/" + fileHeader.Filename

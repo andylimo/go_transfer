@@ -1,9 +1,10 @@
 package actions
 
 import (
-	"filetransfer/util"
 	"net/http"
 	"strconv"
+
+	"github.com/tiger5226/filetransfer/util"
 
 	"github.com/sirupsen/logrus"
 

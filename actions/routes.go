@@ -1,9 +1,10 @@
 package actions
 
 import (
-	"filetransfer/actions/jenkinsfile"
-	"filetransfer/orderedmap"
 	"net/http"
+
+	"github.com/tiger5226/filetransfer/actions/jenkinsfile"
+	"github.com/tiger5226/filetransfer/orderedmap"
 
 	"github.com/lbryio/lbry.go/extras/api"
 )

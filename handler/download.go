@@ -7,6 +7,9 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/tiger5226/filetransfer/util"
+
+	"github.com/lbryio/lbry.go/extras/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -24,7 +27,7 @@ func Download(response http.ResponseWriter, request *http.Request) {
 
 	//Check if file exists and open
 	Openfile, err := os.Open(Filename)
-	defer Openfile.Close() //Close after function return
+	defer util.CloseOSFile(Openfile) //Close after function return
 	if err != nil {
 		logrus.Error(err)
 		//File not found, send 404
@@ -38,7 +41,12 @@ func Download(response http.ResponseWriter, request *http.Request) {
 	//Create a buffer to store the header of the file in
 	FileHeader := make([]byte, 512)
 	//Copy the headers into the FileHeader buffer
-	Openfile.Read(FileHeader)
+	_, err = Openfile.Read(FileHeader)
+	if err != nil {
+		http.Error(response, errors.FullTrace(err), http.StatusInternalServerError)
+		return
+	}
+
 	//Get content type of file
 	FileContentType := http.DetectContentType(FileHeader)
 
@@ -53,6 +61,14 @@ func Download(response http.ResponseWriter, request *http.Request) {
 
 	//Send the file
 	//We read 512 bytes from the file already so we reset the offset back to 0
-	Openfile.Seek(0, 0)
-	io.Copy(response, Openfile) //'Copy' the file to the client
+	_, err = Openfile.Seek(0, 0)
+	if err != nil {
+		http.Error(response, errors.FullTrace(err), http.StatusInternalServerError)
+		return
+	}
+	_, err = io.Copy(response, Openfile) //'Copy' the file to the client
+	if err != nil {
+		http.Error(response, errors.FullTrace(err), http.StatusInternalServerError)
+		return
+	}
 }
