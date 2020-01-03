@@ -39,12 +39,12 @@ type bitbucketInfo struct {
 	hookURL  string
 }
 type webhook struct {
-	ID                 int    `json:"id,omitempty"`
-	Title              string `json:"title,omitempty"`
-	URL                string `json:"url,omitempty"`
-	CommittersToIgnore string `json:"omitempty"`
-	BranchesToIgnore   string
-	Enabled            bool `json:"enabled,omitempty"`
+	ID                 int    `json:"id"`
+	Title              string `json:"title"`
+	URL                string `json:"url"`
+	CommittersToIgnore string `json:"-"` //Possibly set in the future?
+	BranchesToIgnore   string `json:"-"` //Possibly set in the future?
+	Enabled            bool   `json:"enabled"`
 }
 type webhooks []webhook
 
