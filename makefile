@@ -12,6 +12,10 @@ all: test build
 build:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test:
+	echo "== Installing dependencies =="
+	go mod download
+	echo "== Checking dependencies =="
+	go mod verify
 	$(GOTEST) -v ./...
 clean:
 	$(GOCLEAN)

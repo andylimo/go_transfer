@@ -23,12 +23,14 @@ func (a byIndex) Len() int           { return len(a) }
 func (a byIndex) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byIndex) Less(i, j int) bool { return a[i].Index < a[j].Index }
 
+// Map represents a mapped structure
 type Map struct {
 	l      sync.RWMutex
 	keys   []string
 	values map[string]interface{}
 }
 
+// New generates a new map object
 func New() *Map {
 	o := Map{}
 	o.l = sync.RWMutex{}
@@ -37,6 +39,7 @@ func New() *Map {
 	return &o
 }
 
+// Get Retrieves a value from the map based on a specified key
 func (o *Map) Get(key string) (interface{}, bool) {
 	o.l.RLock()
 	defer o.l.RUnlock()
@@ -44,6 +47,7 @@ func (o *Map) Get(key string) (interface{}, bool) {
 	return val, exists
 }
 
+// Set Sets a value based on a specified key
 func (o *Map) Set(key string, value interface{}) {
 	o.l.Lock()
 	defer o.l.Unlock()
@@ -80,6 +84,7 @@ func (o *Map) InsertAt(key string, value interface{}, position int) error {
 	return nil
 }
 
+// Prepend Adds a key-value pair, prioritizing the key to be the first of all keys
 func (o *Map) Prepend(key string, value interface{}) {
 	o.l.Lock()
 	defer o.l.Unlock()
@@ -90,6 +95,7 @@ func (o *Map) Prepend(key string, value interface{}) {
 	o.values[key] = value
 }
 
+// Delete Deletes the entry based on the specified key
 func (o *Map) Delete(key string) {
 	o.l.Lock()
 	defer o.l.Unlock()
@@ -109,12 +115,14 @@ func (o *Map) Delete(key string) {
 	delete(o.values, key)
 }
 
+// Keys retrieves a list of all the ordered keys
 func (o *Map) Keys() []string {
 	o.l.RLock()
 	defer o.l.RUnlock()
 	return o.keys
 }
 
+// UnmarshalJSON custom json parser to convert the Map into a json String
 func (o *Map) UnmarshalJSON(b []byte) error {
 	o.l.Lock()
 	defer o.l.Unlock()
@@ -147,9 +155,9 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 			if len(sTrimmed) > 0 && sTrimmed[len(sTrimmed)-1] == ',' {
 				sTrimmed = sTrimmed[0 : len(sTrimmed)-1]
 			}
-			maybeValidJson := sTrimmed + "}"
+			maybeValidJSON := sTrimmed + "}"
 			testMap := map[string]interface{}{}
-			err := json.Unmarshal([]byte(maybeValidJson), &testMap)
+			err := json.Unmarshal([]byte(maybeValidJSON), &testMap)
 			if err == nil {
 				// record the position of this key in s
 				ki := keyIndex{
@@ -169,9 +177,9 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 					// if the value for this key is a map, convert it to an orderedmap.
 					// find end of valueStr by removing everything after last }
 					// until it forms valid json
-					hasValidJson := false
+					hasValidJSON := false
 					i := 1
-					for i < len(valueStr) && !hasValidJson {
+					for i < len(valueStr) && !hasValidJSON {
 						if valueStr[i] != '}' {
 							i = i + 1
 							continue
@@ -180,14 +188,14 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 						testValue := valueStr[0 : i+1]
 						err = json.Unmarshal([]byte(testValue), &subTestMap)
 						if err == nil {
-							hasValidJson = true
+							hasValidJSON = true
 							valueStr = testValue
 							break
 						}
 						i = i + 1
 					}
 					// convert to orderedmap
-					if hasValidJson {
+					if hasValidJSON {
 						mkTyped := m[k].(map[string]interface{})
 						oo := &Map{}
 						mapToOrderedMap(oo, valueStr, mkTyped)
@@ -197,9 +205,9 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 					// if the value for this key is a []interface, convert any map items to an orderedmap.
 					// find end of valueStr by removing everything after last ]
 					// until it forms valid json
-					hasValidJson := false
+					hasValidJSON := false
 					i := 1
-					for i < len(valueStr) && !hasValidJson {
+					for i < len(valueStr) && !hasValidJSON {
 						if valueStr[i] != ']' {
 							i = i + 1
 							continue
@@ -208,13 +216,13 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 						testValue := valueStr[0 : i+1]
 						err = json.Unmarshal([]byte(testValue), &subTestSlice)
 						if err == nil {
-							hasValidJson = true
+							hasValidJSON = true
 							valueStr = testValue
 							break
 						}
 						i = i + 1
 					}
-					if hasValidJson {
+					if hasValidJSON {
 						itemsStr := valueStr[1 : len(valueStr)-1]
 						// get next item in the slice
 						itemIndex := 0
@@ -266,6 +274,7 @@ func mapToOrderedMap(o *Map, s string, m map[string]interface{}) {
 	o.keys = k
 }
 
+// Copy Creates a deep copy of a map
 func (o *Map) Copy() *Map {
 	newMap := New()
 
@@ -277,6 +286,7 @@ func (o *Map) Copy() *Map {
 	return newMap
 }
 
+// MarshalJSON custom json parser to convert a json String into a Map object
 func (o *Map) MarshalJSON() ([]byte, error) {
 	o.l.RLock()
 	defer o.l.RUnlock()

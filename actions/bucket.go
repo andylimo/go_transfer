@@ -10,6 +10,7 @@ import (
 	"github.com/lbryio/lbry.go/extras/errors"
 )
 
+// List generates a list of all the available buckets
 func List(r *http.Request) api.Response {
 	currDir, err := os.Getwd()
 	if err != nil {

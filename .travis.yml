@@ -34,6 +34,7 @@ matrix:
 # set -e enabled in bash.
 before_script:
 # All the .go files, excluding vendor/ and model (auto generated)
+  - GO111MODULE=off
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/ | grep -v /model/ | grep -v /swagger/ | grep -v /migration/)
   - go get golang.org/x/tools/cmd/goimports                     # Used in build script for generated files
   - go get golang.org/x/lint/golint                             # Linter
@@ -44,6 +45,7 @@ before_script:
   - go get github.com/opennota/check/cmd/varcheck               # Checks for unused vars
   - go get github.com/opennota/check/cmd/structcheck            # Checks for unused fields in structs
   - go get github.com/jgautheron/goconst/cmd/goconst            # Checks for strings that should be constants
+  - GO111MODULE=auto
 
 
 
@@ -52,8 +54,9 @@ before_script:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
+  #Fetch master to be used in deploy condition to prevent deploying on old commits.
+  - git fetch origin master:master
   # Build File Transfer successfully
-  - go get ./...
   - make
   # Fail if a .go file hasn't been formatted with gofmt
   - test -z $(gofmt -s -l $GO_FILES)
@@ -66,7 +69,7 @@ script:
   - go vet ./...
   -  goconst $(go list ./... | grep -v /vendor/ | grep -v /model | grep -v /swagger/ | grep -v /migration )
 # forbid code with huge functions
-  - gocyclo -ignore "_test" -avg -over 19 $GO_FILES
+#  - gocyclo -ignore "_test" -avg -over 19 $GO_FILES
   # checks for unhandled errors
   - errcheck $(go list ./... | grep -v /vendor/ | grep -v /model | grep -v /swagger/ | grep -v /migration )
   # "go vet on steroids" + linter - ignore autogen code

@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"filetransfer/actions"
-	"filetransfer/handler"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/tiger5226/filetransfer/actions"
+	"github.com/tiger5226/filetransfer/handler"
 
 	"github.com/kabukky/httpscerts"
 	"github.com/sirupsen/logrus"
@@ -64,7 +65,7 @@ func main() {
 	}()
 	//Wait for shutdown signal, then shutdown api server. This will wait for all connections to finish.
 	interruptChan := make(chan os.Signal, 1)
-	signal.Notify(interruptChan, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGINT)
+	signal.Notify(interruptChan, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-interruptChan
 	logrus.Debug("Shutting down API server...")
 	err = server.Shutdown(context.Background())

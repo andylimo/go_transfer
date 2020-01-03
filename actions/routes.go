@@ -1,17 +1,20 @@
 package actions
 
 import (
-	"filetransfer/actions/jenkinsfile"
-	"filetransfer/orderedmap"
 	"net/http"
+
+	"github.com/tiger5226/filetransfer/actions/jenkinsfile"
+	"github.com/tiger5226/filetransfer/orderedmap"
 
 	"github.com/lbryio/lbry.go/extras/api"
 )
 
+// Routes an ordered map of the various endpoints for the API server
 type Routes struct {
 	m *orderedmap.Map
 }
 
+// Set Adds an API handler to the system based on a specific key
 func (r *Routes) Set(key string, h api.Handler) {
 	if r.m == nil {
 		r.m = orderedmap.New()
@@ -19,6 +22,7 @@ func (r *Routes) Set(key string, h api.Handler) {
 	r.m.Set(key, h)
 }
 
+// GetRoutes Generates the entire set of routes to be used by the API server
 func GetRoutes() *Routes {
 	routes := Routes{}
 
@@ -32,6 +36,7 @@ func GetRoutes() *Routes {
 	return &routes
 }
 
+// Each Iterates through all of the routes based on a lambda function
 func (r *Routes) Each(f func(string, http.Handler)) {
 	if r.m == nil {
 		return
@@ -42,6 +47,7 @@ func (r *Routes) Each(f func(string, http.Handler)) {
 	}
 }
 
+// Walk Iterates & updates all of the routes based on a lambda function
 func (r *Routes) Walk(f func(string, http.Handler) http.Handler) {
 	if r.m == nil {
 		return
