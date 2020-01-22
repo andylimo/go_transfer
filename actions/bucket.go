@@ -26,11 +26,14 @@ func List(r *http.Request) api.Response {
 	if err != nil {
 		return api.Response{Error: errors.Err(err)}
 	}
-	root := currDir + `/data`
+	root := currDir + string(os.PathSeparator) + "data"
 	var buckets []*ftBucket
 	var bucket *ftBucket
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		bucketName := strings.ReplaceAll(path, root, "")
+		bucketName = strings.TrimPrefix(bucketName, string(os.PathSeparator))
+		bucketName = strings.ReplaceAll(bucketName, string(os.PathSeparator), "-")
+
 		if root == path {
 			return nil
 		}
