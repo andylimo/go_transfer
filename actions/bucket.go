@@ -26,7 +26,7 @@ func List(r *http.Request) api.Response {
 	if err != nil {
 		return api.Response{Error: errors.Err(err)}
 	}
-	root := currDir + "/data"
+	root := currDir + "\\data"
 	var buckets []*ftBucket
 	var bucket *ftBucket
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
