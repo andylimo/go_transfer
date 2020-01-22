@@ -27,12 +27,12 @@ func List(r *http.Request) api.Response {
 	if err != nil {
 		return api.Response{Error: errors.Err(err)}
 	}
-	root := currDir + string(os.PathSeparator) + "data"
+	root := currDir + "/data"
 	var buckets []*ftBucket
 	var bucket *ftBucket
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		logrus.Info("Path: ", path, "Root: ", root)
-		bucketName := strings.ReplaceAll(path, root, "")
+		logrus.Info("Path: ", filepath.FromSlash(path), " Root: ", filepath.FromSlash(root))
+		bucketName := strings.ReplaceAll(filepath.FromSlash(path), filepath.FromSlash(root), "")
 		bucketName = strings.TrimPrefix(bucketName, string(os.PathSeparator))
 		bucketName = strings.ReplaceAll(bucketName, string(os.PathSeparator), "-")
 
