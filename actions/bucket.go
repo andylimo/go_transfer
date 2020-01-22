@@ -28,6 +28,10 @@ func List(r *http.Request) api.Response {
 		return api.Response{Error: errors.Err(err)}
 	}
 	root := currDir + "/data"
+	if filepath.FromSlash(currDir) == filepath.FromSlash("/") {
+		root = currDir + "data"
+	}
+
 	var buckets []*ftBucket
 	var bucket *ftBucket
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
