@@ -11,6 +11,7 @@ import (
 	"github.com/lbryio/lbry.go/extras/errors"
 	v "github.com/lbryio/ozzo-validation"
 	"github.com/lbryio/ozzo-validation/is"
+	"github.com/sirupsen/logrus"
 )
 
 // List generates a list of all the available buckets
@@ -30,6 +31,7 @@ func List(r *http.Request) api.Response {
 	var buckets []*ftBucket
 	var bucket *ftBucket
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		logrus.Info("Path: ", path, "Root: ", root)
 		bucketName := strings.ReplaceAll(path, root, "")
 		bucketName = strings.TrimPrefix(bucketName, string(os.PathSeparator))
 		bucketName = strings.ReplaceAll(bucketName, string(os.PathSeparator), "-")
