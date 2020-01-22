@@ -27,7 +27,6 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	}
 
 	var err error
-	bucket := request.FormValue("bucket")
 	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
 		logrus.Error("Was not able to access the uploaded file: ", err)
@@ -37,9 +36,6 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 
 	// Close the file afterwards:
 	defer util.CloseMPFile(file)
-
-	// Get the original filename:
-	sourceFilename := bucket + "/" + fileHeader.Filename
 
 	// Read the entire file into memory:
 	data, err := ioutil.ReadAll(file)
@@ -56,26 +52,34 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 
 	// Check if the directory exists!  If not, then we need to create it now
 	directory := filepath.Join(currDir, "data")
-	_, err = os.Stat(directory + "/" + strings.Split(sourceFilename, "/")[0])
+	pathElements := strings.Split(fileHeader.Filename, "/")
+	bucket := strings.Join(pathElements[:len(pathElements)-1], "/")
+	fileName := pathElements[len(pathElements)-1]
+	logrus.Debug("Bucket: ", bucket)
+
+	_, err = os.Stat(directory + "/" + bucket)
 	if err != nil {
-		logrus.Info(err)
+		logrus.Error(err)
 	}
 	if os.IsNotExist(err) {
-		logrus.Info("Server: Unable to find directory, '", directory, "'.  Creating now...")
-		err := os.MkdirAll(directory+"/"+strings.Split(sourceFilename, "/")[0], 0755)
+		logrus.Debug("Server: Unable to find directory, '", directory, "'.  Creating now...")
+		err := os.MkdirAll(directory+"/"+bucket, 0755)
 		if err != nil {
 			logrus.Error(err)
 		}
 	}
 
 	// Write the data into a new file on server's side:
-	logrus.Info(directory)
+	logrus.Debug("Directory:", directory+"/"+bucket)
+	// Get the original filename:
+	sourceFilename := bucket + "/" + fileName
+	logrus.Debug("Filename: ", fileName)
 	err = ioutil.WriteFile(filepath.Join(directory, sourceFilename), data, 0600)
 	if err != nil {
 		logrus.Error("ERROR:", err)
 		http.Error(response, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	logrus.Info("Server: File was read from client and written to disk.")
+	logrus.Debug("Server: File was read from client and written to disk.")
 	response.WriteHeader(http.StatusOK)
 }
