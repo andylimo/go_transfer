@@ -55,7 +55,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	// Check if the directory exists!  If not, then we need to create it now
 	fileName := fileHeader.Filename
 	if bucket != "" {
-		fileName = bucket + fileName
+		fileName = bucket + "/" + fileName
 	}
 	directory := filepath.Join(currDir, "data")
 	pathElements := strings.Split(fileName, "/")
