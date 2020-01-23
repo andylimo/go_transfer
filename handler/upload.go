@@ -34,6 +34,8 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	bucket := request.FormValue("bucket")
+
 	// Close the file afterwards:
 	defer util.CloseMPFile(file)
 
@@ -51,10 +53,14 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	}
 
 	// Check if the directory exists!  If not, then we need to create it now
+	fileName := fileHeader.Filename
+	if bucket != "" {
+		fileName = bucket + "/" + fileName
+	}
 	directory := filepath.Join(currDir, "data")
 	pathElements := strings.Split(fileHeader.Filename, "/")
-	bucket := strings.Join(pathElements[:len(pathElements)-1], "/")
-	fileName := pathElements[len(pathElements)-1]
+	bucket = strings.Join(pathElements[:len(pathElements)-1], "/")
+	fileName = pathElements[len(pathElements)-1]
 	logrus.Debug("Bucket: ", bucket)
 
 	_, err = os.Stat(directory + "/" + bucket)
