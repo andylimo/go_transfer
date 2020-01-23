@@ -17,7 +17,8 @@ import (
 // List generates a list of all the available buckets
 func List(r *http.Request) api.Response {
 	params := struct {
-		Bucket *string
+		Bucket   *string
+		Contains *string
 	}{}
 
 	err := api.FormValues(r, &params, []*v.FieldRules{
@@ -46,7 +47,11 @@ func List(r *http.Request) api.Response {
 
 		if info.IsDir() && (bucket == nil || bucket.Name != info.Name()) {
 			bucket = &ftBucket{Name: bucketName, Files: make([]*ftBucketFile, 0)}
-			if params.Bucket == nil || strings.Contains(path, *params.Bucket) {
+			if params.Bucket != nil && bucketName == *params.Bucket {
+				buckets = append(buckets, bucket)
+			} else if params.Contains != nil && strings.Contains(bucketName, *params.Contains) {
+				buckets = append(buckets, bucket)
+			} else if params.Bucket == nil && params.Contains == nil {
 				buckets = append(buckets, bucket)
 			}
 		} else {
