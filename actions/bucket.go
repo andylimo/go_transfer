@@ -24,6 +24,10 @@ func List(r *http.Request) api.Response {
 	err := api.FormValues(r, &params, []*v.FieldRules{
 		v.Field(&params.Bucket, is.PrintableASCII),
 	})
+	if err != nil {
+		return api.Response{Error: errors.Err(err)}
+	}
+
 	currDir, err := os.Getwd()
 	if err != nil {
 		return api.Response{Error: errors.Err(err)}

@@ -69,7 +69,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	}
 	if os.IsNotExist(err) {
 		logrus.Debug("Server: Unable to find directory, '", directory, "'.  Creating now...")
-		err := os.MkdirAll(directory+"/"+bucket, 0755)
+		err := os.MkdirAll(directory+"/"+bucket, 0744) // http://permissions-calculator.org/decode/0744/
 		if err != nil {
 			logrus.Error(err)
 		}
@@ -79,13 +79,22 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	logrus.Debug("Directory:", directory+"/"+bucket)
 	// Get the original filename:
 	sourceFilename := bucket + "/" + fileName
+	sourceFilePath := filepath.Join(directory, sourceFilename)
 	logrus.Debug("Filename: ", fileName)
-	err = ioutil.WriteFile(filepath.Join(directory, sourceFilename), data, 0600)
+	err = ioutil.WriteFile(sourceFilePath, data, 0744)
 	if err != nil {
 		logrus.Error("ERROR:", err)
 		http.Error(response, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	err = os.Chown(sourceFilePath, 65534, 65534)
+	if err != nil {
+		logrus.Error("ERROR:", err)
+		http.Error(response, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	logrus.Debug("Server: File was read from client and written to disk.")
 	response.WriteHeader(http.StatusOK)
 }
