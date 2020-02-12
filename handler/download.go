@@ -55,7 +55,9 @@ func Download(response http.ResponseWriter, request *http.Request) {
 	FileSize := strconv.FormatInt(FileStat.Size(), 10) //Get file size as a string
 
 	//Send the headers
-	response.Header().Set("Content-Disposition", "attachment; filename="+Filename)
+	shortName := FileStat.Name()
+	fmt.Println("Sending client: " + shortName)
+	response.Header().Set("Content-Disposition", "attachment; filename="+shortName)
 	response.Header().Set("Content-Type", FileContentType)
 	response.Header().Set("Content-Length", FileSize)
 
