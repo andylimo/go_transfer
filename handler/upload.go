@@ -69,9 +69,19 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	}
 	if os.IsNotExist(err) {
 		logrus.Debug("Server: Unable to find directory, '", directory, "'.  Creating now...")
-		err := os.MkdirAll(directory+"/"+bucket, 0744) // http://permissions-calculator.org/decode/0744/
+		bucketDir := directory + "/" + bucket
+		err := os.MkdirAll(bucketDir, 0755) // http://permissions-calculator.org/decode/0755/
 		if err != nil {
 			logrus.Error(err)
+			http.Error(response, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = os.Chown(bucketDir, 65534, 65534)
+		if err != nil {
+			logrus.Error("ERROR:", err)
+			http.Error(response, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -81,7 +91,7 @@ func Upload(response http.ResponseWriter, request *http.Request) {
 	sourceFilename := bucket + "/" + fileName
 	sourceFilePath := filepath.Join(directory, sourceFilename)
 	logrus.Debug("Filename: ", fileName)
-	err = ioutil.WriteFile(sourceFilePath, data, 0744)
+	err = ioutil.WriteFile(sourceFilePath, data, 0755)
 	if err != nil {
 		logrus.Error("ERROR:", err)
 		http.Error(response, err.Error(), http.StatusInternalServerError)
